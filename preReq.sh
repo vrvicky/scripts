@@ -1,16 +1,21 @@
-echo 'root:icam1234$$'|chpasswd
+echo 'root:icam1234$$'|chpasswd > out.log
 
-sysctl -w vm.max_map_count=262144
+sysctl -w vm.max_map_count=262144 >> out.log
 
-echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf >> out.log
 
-sysctl -w net.ipv4.ip_local_port_range="10240  60999"
 
-echo 'net.ipv4.ip_local_port_range="10240 60999"' | sudo tee -a /etc/sysctl.conf
+sysctl -w net.ipv4.ip_local_port_range="10240  60999" >> out.log
 
-bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
 
-sudo dpkg --configure -a
+echo 'net.ipv4.ip_local_port_range="10240 60999"' | sudo tee -a /etc/sysctl.conf >> out.log
+
+
+bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)" >> out.log
+
+
+sudo dpkg --configure -a >> out.log
+
 
 (
 echo n # Add a new partition
@@ -19,9 +24,10 @@ echo 1 # Partition number
 echo   # First sector (Accept default: 1)
 echo   # Last sector (Accept default: varies)
 echo w # Write changes
-) | sudo fdisk /dev/xvdc
+) | sudo fdisk /dev/xvdc >> out.log
 
-mkfs.ext3 /dev/xvdc1
+
+mkfs.ext3 /dev/xvdc1 >> out.log
 
 mkdir /home/icp
 
@@ -31,28 +37,51 @@ mount /dev/xvdc1 /home/icp
 
 echo "/dev/xvdc1 /home/icp ext3 defaults 0 2" >> /etc/fstab
 
-sudo apt-get remove -y docker docker-engine docker.io
+Echo "mounting done " >> out.log
 
-sudo apt-get update -y
+sudo dpkg --configure -a >> out.log
 
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-get remove -y docker docker-engine docker.io >> out.log
 
-sudo apt-key fingerprint 0EBFCD88
+sudo dpkg --configure -a >> out.log
+
+
+sudo apt-get update -y >> out.log
+
+
+sudo dpkg --configure -a >> out.log
+
+
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common >> out.log
+
+sudo dpkg --configure -a >> out.log
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - >> out.log
+
+
+sudo apt-key fingerprint 0EBFCD88 >> out.log
+
 
 sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable"
+   stable" >> out.log
 
 
-sudo apt-get update -y
+
+sudo apt-get update -y >> out.log
+
+sudo dpkg --configure -a >> out.log
 
 
 sudo apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 
-sudo dpkg --configure -a
+sudo dpkg --configure -a >> out.log
+
+echo "docker configured" >> out.log
+
+systemctl start docker
 
 docker rm -f $(docker ps -aq); docker rmi -f $(docker images -q)
 systemctl stop docker
@@ -62,8 +91,12 @@ mkdir /home/icp/docker
 mkdir  /var/lib/docker
 mount --rbind /home/icp/docker /var/lib/docker
 
+echo "docker storage reconfigured" >> out.log
+
 echo "/var/lib/docker /home/icp/docker ext3 defaults 0 2" >> /etc/fstab
 
 systemctl start docker
+
+echo "complete" >> out.log
 
 
