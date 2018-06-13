@@ -9,6 +9,9 @@ sysctl -w net.ipv4.ip_local_port_range="10240  60999"
 echo 'net.ipv4.ip_local_port_range="10240 60999"' | sudo tee -a /etc/sysctl.conf
 
 bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
+sudo dpkg --configure -a
+
 (
 echo n # Add a new partition
 echo p # Primary partition
@@ -48,6 +51,8 @@ sudo apt-get update -y
 
 
 sudo apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
+
+sudo dpkg --configure -a
 
 docker rm -f $(docker ps -aq); docker rmi -f $(docker images -q)
 systemctl stop docker
