@@ -39,64 +39,15 @@ echo "/dev/xvdc1 /home/icp ext3 defaults 0 2" >> /etc/fstab
 
 Echo "mounting done " >> out.log
 
-sudo dpkg --configure -a >> out.log
-
-
-sudo apt-get remove -y docker docker-engine docker.io >> out.log
-
-sudo dpkg --configure -a >> out.log
-
-
-sudo apt-get update -y >> out.log
-
-
-sudo dpkg --configure -a >> out.log
-
-
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common >> out.log
-
-sudo dpkg --configure -a >> out.log
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - >> out.log
-
-
-sudo apt-key fingerprint 0EBFCD88 >> out.log
-
-
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable" >> out.log
-
-
-
-sudo apt-get update -y >> out.log
-
-sudo dpkg --configure -a >> out.log
-
-
-sudo apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
-
-sudo dpkg --configure -a >> out.log
-
-echo "docker configured" >> out.log
-
-systemctl start docker
-
-docker rm -f $(docker ps -aq); docker rmi -f $(docker images -q)
-systemctl stop docker
-rm -rf /var/lib/docker
-
 mkdir /home/icp/docker
 mkdir  /var/lib/docker
 mount --rbind /home/icp/docker /var/lib/docker
 
-echo "docker storage reconfigured" >> out.log
+
 
 echo "/var/lib/docker /home/icp/docker ext3 defaults 0 2" >> /etc/fstab
 
-systemctl start docker
 
-echo "complete" >> out.log
+echo "docker storage reconfigured" >> out.log
 
 
