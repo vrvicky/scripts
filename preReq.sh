@@ -11,7 +11,7 @@ sysctl -w net.ipv4.ip_local_port_range="10240  60999" >> out.log
 echo 'net.ipv4.ip_local_port_range="10240 60999"' | sudo tee -a /etc/sysctl.conf >> out.log
 
 
-bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)" >> out.log
+bash -c "test -e /usr/bin/python || (apt -qy update && apt install -qy python-minimal)" >> out.log
 
 
 sudo dpkg --configure -a >> out.log
@@ -37,7 +37,7 @@ mount /dev/xvdc1 /home/icp
 
 echo "/dev/xvdc1 /home/icp ext3 defaults 0 2" >> /etc/fstab
 
-Echo "mounting done " >> out.log
+echo "mounting done " >> out.log
 
 mkdir /home/icp/docker
 mkdir  /var/lib/docker
@@ -49,5 +49,3 @@ echo "/var/lib/docker /home/icp/docker ext3 defaults 0 2" >> /etc/fstab
 
 
 echo "docker storage reconfigured" >> out.log
-
-
