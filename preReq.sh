@@ -50,3 +50,8 @@ echo "/var/lib/docker /home/icp/docker ext3 defaults 0 2" >> /etc/fstab
 
 echo "docker storage reconfigured" >> out.log
 
+
+cp /etc/hosts /etc/hosts.backup
+cat /etc/hosts | sed -e '/127.0.1.1/ d' | tee tempHosts
+mv tempHosts /etc/hosts
+
